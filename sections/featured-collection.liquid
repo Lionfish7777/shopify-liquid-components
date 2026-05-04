@@ -1,0 +1,195 @@
+{% comment %}
+  featured-collection.liquid
+  ─────────────────────────────────────────────────────────────────────────────
+  Renders a responsive product grid from a merchant-selected collection.
+  All display options (heading, product count, column layout, view-all button)
+  are configurable through the Shopify theme editor via the {% schema %} block.
+
+  Usage: Add to any Shopify 2.0 theme via the theme editor or sections/
+  ─────────────────────────────────────────────────────────────────────────────
+{% endcomment %}
+
+<section
+  class="featured-collection section-{{ section.id }}"
+  aria-label="{{ section.settings.heading | escape }}"
+>
+  <div class="featured-collection__container page-width">
+
+    {% comment %} Section header — only renders if heading is set {% endcomment %}
+    {% if section.settings.heading != blank %}
+      <div class="featured-collection__header">
+        <h2 class="featured-collection__heading">
+          {{ section.settings.heading | escape }}
+        </h2>
+
+        {% if section.settings.subheading != blank %}
+          <p class="featured-collection__subheading">
+            {{ section.settings.subheading | escape }}
+          </p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% comment %}
+      Resolve the collection from the theme editor picker.
+      collections[] is a global Liquid object — index by handle or object.
+    {% endcomment %}
+    {% assign collection = collections[section.settings.collection] %}
+
+    {% if collection != blank and collection.products_count > 0 %}
+
+      <ul
+        class="featured-collection__grid"
+        role="list"
+        data-columns="{{ section.settings.columns_desktop }}"
+      >
+        {% for product in collection.products limit: section.settings.products_to_show %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      </ul>
+
+      {% comment %} View all link — only shown when collection has more products than displayed {% endcomment %}
+      {% if section.settings.show_view_all
+        and collection.products_count > section.settings.products_to_show
+      %}
+        <div class="featured-collection__footer">
+          <a
+            href="{{ collection.url }}"
+            class="featured-collection__view-all btn btn--secondary"
+          >
+            View all {{ collection.title }}
+            <span class="featured-collection__count">({{ collection.products_count }})</span>
+          </a>
+        </div>
+      {% endif %}
+
+    {% else %}
+      {% comment %} Graceful empty state — shown in editor preview and on empty collections {% endcomment %}
+      <p class="featured-collection__empty">
+        No products found. Select a collection in the theme editor.
+      </p>
+    {% endif %}
+
+  </div>
+</section>
+
+<style>
+  .section-{{ section.id }} .featured-collection__grid {
+    --columns: {{ section.settings.columns_desktop }};
+  }
+
+  .featured-collection__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+
+  .featured-collection__header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+
+  .featured-collection__heading {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .featured-collection__subheading {
+    font-size: 1rem;
+    opacity: 0.65;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .featured-collection__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--columns, 4), 1fr);
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .featured-collection__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 540px) {
+    .featured-collection__grid { grid-template-columns: 1fr; }
+  }
+
+  .featured-collection__footer {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .featured-collection__count {
+    opacity: 0.6;
+    font-size: 0.9em;
+  }
+
+  .featured-collection__empty {
+    text-align: center;
+    opacity: 0.5;
+    padding: 3rem 0;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Featured Collection",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "info": "Optional — displays below the heading"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 2,
+      "default": 4,
+      "label": "Products to show"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 4,
+      "label": "Columns on desktop"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": true,
+      "label": "Show 'View all' button",
+      "info": "Only appears when the collection has more products than shown"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,92 @@
+{% comment %}
+  product-card.liquid
+  ─────────────────────────────────────────────────────────────────────────────
+  Reusable product card snippet. Renders product image, vendor, title,
+  price (with sale logic and discount percentage), and availability badge.
+
+  Parameters:
+    product {Object} required — Shopify product object
+
+  Usage:
+    {% render 'product-card', product: product %}
+  ─────────────────────────────────────────────────────────────────────────────
+{% endcomment %}
+
+{% comment %} Determine sale state once — reused across the template {% endcomment %}
+{% assign on_sale = false %}
+{% if product.compare_at_price > product.price %}
+  {% assign on_sale = true %}
+{% endif %}
+
+{% comment %} Pre-compute discount percentage using Liquid arithmetic filters {% endcomment %}
+{% if on_sale %}
+  {% assign discount_amount = product.compare_at_price | minus: product.price %}
+  {% assign discount_pct = discount_amount | times: 100 | divided_by: product.compare_at_price %}
+{% endif %}
+
+<li class="product-card">
+  <a
+    href="{{ product.url }}"
+    class="product-card__link"
+    aria-label="{{ product.title | escape }}"
+  >
+
+    <div class="product-card__media">
+      {% if product.featured_image %}
+        <img
+          src="{{ product.featured_image | img_url: '500x' }}"
+          alt="{{ product.featured_image.alt | default: product.title | escape }}"
+          loading="lazy"
+          width="500"
+          height="{{ 500 | divided_by: product.featured_image.aspect_ratio | round }}"
+          class="product-card__image"
+        >
+      {% else %}
+        {% comment %} Liquid placeholder helper — renders SVG in editor preview {% endcomment %}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}
+      {% endif %}
+
+      {% comment %} Badges — layered: sale takes priority over sold-out in positioning {% endcomment %}
+      {% if on_sale %}
+        <span class="product-card__badge product-card__badge--sale">
+          -{{ discount_pct }}%
+        </span>
+      {% endif %}
+
+      {% unless product.available %}
+        <span class="product-card__badge product-card__badge--sold-out">
+          Sold out
+        </span>
+      {% endunless %}
+    </div>
+
+    <div class="product-card__info">
+
+      {% if product.vendor != blank %}
+        <p class="product-card__vendor">{{ product.vendor | upcase }}</p>
+      {% endif %}
+
+      <h3 class="product-card__title">{{ product.title | escape }}</h3>
+
+      <div class="product-card__price" aria-label="Price">
+        {% if on_sale %}
+          <span class="product-card__price--sale" aria-label="Sale price">
+            {{ product.price | money }}
+          </span>
+          <s class="product-card__price--compare" aria-label="Original price">
+            {{ product.compare_at_price | money }}
+          </s>
+        {% else %}
+          <span class="product-card__price--regular">
+            {% if product.price_varies %}
+              From {{ product.price_min | money }}
+            {% else %}
+              {{ product.price | money }}
+            {% endif %}
+          </span>
+        {% endif %}
+      </div>
+
+    </div>
+  </a>
+</li>
