@@ -9,8 +9,8 @@ building for people who will never touch the code.
 
 ## Live Demo
 
-No hosted demo. These are Shopify theme components that run inside a live
-Shopify 2.0 store. Install instructions are in the section below.
+These components run inside a live Shopify 2.0 store. There is no hosted demo.
+Follow the Installation instructions below to add them to any theme.
 
 ---
 
