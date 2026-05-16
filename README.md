@@ -122,8 +122,30 @@ computed from the image's actual aspect ratio using Liquid's arithmetic filters.
 
 ---
 
+## What We Learned
+
+We had never built inside a live theme architecture before. Liquid is a different
+mental model from JavaScript and we did not pretend otherwise. We read the
+documentation closely. We built against a real store. We broke things and fixed
+them until we understood what was actually happening. That is the only approach
+we know that leads to real understanding rather than a surface approximation of it.
+
+Section scoped CSS was where it clicked. Using the section ID as a CSS prefix
+means merchants can place multiple instances on a page without styles colliding.
+That is not a trick. It is how you build something that holds up for someone who
+is not you and never will be. The moment that landed we started thinking about
+every assumption baked into the template that the merchant had not asked for.
+
+Building for someone who will never touch the code is harder than building for
+yourself. Every setting not in the schema is a setting they cannot control. Every
+decision we make is a constraint they inherit. We are newer to this field and we
+want to keep developing that instinct. Our work begins with thinking about the
+person on the other side of what we build. The code comes second.
+
+---
+
 ## Status
 
-Complete. Ready to drop into any Shopify 2.0 theme.
+Public. Complete. Ready to drop into any Shopify 2.0 theme.
 
 ---
