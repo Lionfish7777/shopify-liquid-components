@@ -144,6 +144,17 @@ person on the other side of what we build. The code comes second.
 
 ---
 
+## Future Improvements
+
+Two components in and we have a clear picture of the full library. We are just getting started.
+
+- Announcement bar with countdown timer. Merchants need urgency. A configurable countdown tied to a sale end date is one of the most requested features in any theme and we want to build it right.
+- Testimonials section. Social proof pulled from metafields, fully configurable through the theme editor, no code required after installation.
+- Hero section with video support. The most important section on any storefront. We know exactly how to build a flexible schema driven hero that works for any merchant and we are going to build it.
+- Dawn compatibility. Our components work against a generic 2.0 theme. Testing and confirming against Dawn makes them usable by the widest possible audience.
+
+---
+
 ## Status
 
 Public. Complete. Ready to drop into any Shopify 2.0 theme.
