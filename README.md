@@ -7,6 +7,11 @@ install. Working through schema integration, section scoping, and snippet
 composition with real merchant use cases in mind sharpened how we think about
 building for people who will never touch the code.
 
+## Live Demo
+
+No hosted demo. These are Shopify theme components that run inside a live
+Shopify 2.0 store. Install instructions are in the section below.
+
 ---
 
 ## Components
